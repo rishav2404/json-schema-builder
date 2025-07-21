@@ -112,7 +112,7 @@ const SchemaField: React.FC<SchemaFieldProps> = ({
               className="flex items-center gap-1 px-3 py-2 text-sm text-green-600 hover:text-green-700 hover:bg-green-50 rounded transition-colors"
             >
               <Plus size={14} />
-              Add Child
+              Add Item
             </button>
           )}
 
