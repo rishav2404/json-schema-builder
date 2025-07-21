@@ -19,26 +19,8 @@ const SchemaField: React.FC<SchemaFieldProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const [isEditingKey, setIsEditingKey] = useState(false);
-  const [keyValue, setKeyValue] = useState(field.key);
+  const [keyValue, setKeyValue] = useState(field.key ?? '');
   const [value, setValue] = useState(field.value ?? '');
-
-  const handleKeySubmit = () => {
-    if (keyValue.trim()) {
-      onUpdate(field.id, { key: keyValue.trim() });
-    } else {
-      setKeyValue(field.key);
-    }
-    setIsEditingKey(false);
-  };
-
-  const handleKeyKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleKeySubmit();
-    } else if (e.key === 'Escape') {
-      setKeyValue(field.key);
-      setIsEditingKey(false);
-    }
-  };
 
   const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
@@ -47,6 +29,11 @@ const SchemaField: React.FC<SchemaFieldProps> = ({
 
   const handleTypeChange = (type: 'string' | 'number' | 'float' | 'objectId' | 'boolean' | 'array' | 'nested') => {
     onUpdate(field.id, { type });
+  };
+
+  const handleKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setKeyValue(e.target.value);
+    onUpdate(field.id, { key: e.target.value });
   };
 
   const indent = level * 24;
@@ -74,10 +61,10 @@ const SchemaField: React.FC<SchemaFieldProps> = ({
           {isEditingKey ? (
             <input
               type="text"
-              value={keyValue}
-              onChange={(e) => setKeyValue(e.target.value)}
-              onBlur={handleKeySubmit}
-              onKeyDown={handleKeyKeyPress}
+              value={keyValue || ''}
+              onChange={handleKeyChange}
+              onBlur={() => setIsEditingKey(false)}
+              onKeyDown={(e) => { if (e.key === 'Escape') setIsEditingKey(false); }}
               className="w-full px-3 py-2 text-sm border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               autoFocus
             />
@@ -95,7 +82,7 @@ const SchemaField: React.FC<SchemaFieldProps> = ({
         {field.type !== 'nested' && (
           <input
             type="text"
-            value={value}
+            value={typeof value === 'string' ? value : value === undefined ? '' : String(value)}
             onChange={handleValueChange}
             className="w-32 px-2 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white mr-2"
             placeholder="Value"

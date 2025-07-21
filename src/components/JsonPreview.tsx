@@ -4,10 +4,9 @@ import type { SchemaFieldType } from './SchemaPage';
 
 interface JsonPreviewProps {
   fields: SchemaFieldType[];
-  schemaKey: string;
 }
 
-const JsonPreview: React.FC<JsonPreviewProps> = ({ fields, schemaKey }) => {
+const JsonPreview: React.FC<JsonPreviewProps> = ({ fields }) => {
   const [copied, setCopied] = React.useState(false);
 
   const generateJsonSchema = (fields: SchemaFieldType[]): Record<string, unknown> => {
@@ -43,7 +42,7 @@ const JsonPreview: React.FC<JsonPreviewProps> = ({ fields, schemaKey }) => {
     return schema;
   };
 
-  const jsonSchema: Record<string, unknown> = { [schemaKey]: generateJsonSchema(fields) };
+  const jsonSchema: Record<string, unknown> = generateJsonSchema(fields);
   const jsonString = JSON.stringify(jsonSchema, null, 2);
 
   const copyToClipboard = async () => {
